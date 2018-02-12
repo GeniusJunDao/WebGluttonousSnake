@@ -16,7 +16,7 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
 	if r.URL.Path == "/" {
-		r.URL.Path += "html/index.html"
+		r.URL.Path += "index.html"
 	}
 	str, err := getFile("../web" + r.URL.Path)
 	if err != nil {
