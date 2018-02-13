@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	//"golang.org/x/net/websocket"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,9 +19,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		r.URL.Path += "index.html"
 	}
-	str, err := getFile("../web" + r.URL.Path)
+	str, err := getFile("./web" + r.URL.Path)
 	if err != nil {
-		fmt.Fprintf(w, "505")
+		fmt.Fprintf(w, "找不到文件")
 	}
 	fmt.Fprint(w, str)
 }
