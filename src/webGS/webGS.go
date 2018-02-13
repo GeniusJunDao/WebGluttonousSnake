@@ -41,7 +41,9 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	go game.ServePlayer(game.CreatePlayer(conn)) //服务玩家
+	player := game.CreatePlayer(conn)
+	log.Println("Player ", player.ID, " join.")
+	go game.ServePlayer(player) //服务玩家
 }
 
 //读取文件

@@ -3,6 +3,7 @@ package game
 import (
 	ws "github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
+	"log"
 	"time"
 )
 
@@ -47,8 +48,9 @@ func ServePlayer(player Player) {
 	player.conn.WriteJSON(map[string]string{"yourID": player.ID.String()}) //告诉客户端玩家ID
 	respond := map[string]string{}
 	//读取客户端发送的"OK"
+
 	isTimeOut, err := TimeOut(func() error {
-		return player.conn.ReadJSON(respond)
+		return player.conn.ReadJSON(&respond)
 	}, 30*time.Second)
 	if isTimeOut {
 		player.Close()
@@ -59,6 +61,7 @@ func ServePlayer(player Player) {
 		return
 	}
 	if respond["ready"] != "OK" {
+		log.Println("ready:", respond["ready"])
 		player.conn.WriteJSON(map[string]string{"msg": "close"})
 		player.Close()
 		return
@@ -85,10 +88,12 @@ func TimeOut(f func() error, d time.Duration) (isTimeOut bool, err error) {
 
 //匹配队友并开始对战。该函数可能返回，也可能不返回
 func (p *Player) searchRival() {
+	log.Println("Player ", p.ID, " starting search rival")
 	select {
 	case match <- p:
 	case rival := <-match:
 		m := Match{p1: p, p2: rival}
+		log.Printf("Player %s and %s match", m.p1.ID, m.p2.ID)
 		m.Run()
 	}
 }
