@@ -21,6 +21,11 @@ type Jerry struct {
 	d    int                //蛇目前行进的方向
 }
 
+//GetPlat 返回整个地图
+func (j *Jerry) GetPlat() [Weight][Hight]int {
+	return j.plat
+}
+
 //GetBlock 获取地图上一个块所储存的数据，0表示空，>0表示是蛇， <0表示是食物，参数x, y是坐标返回值是数据
 func (j *Jerry) GetBlock(x, y int) int {
 	x, y = FormattingCoordinates(x, y)
