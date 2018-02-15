@@ -1,5 +1,5 @@
 var ID //玩家ID
-var d = 1
+var d = 0
 
 function game() {
 	window.addEventListener('keydown', function(e) {
@@ -37,12 +37,40 @@ function game() {
 	}
 }
 
-function paintSnake(snake) {
-	console.log(snake.player1)
+function paintSnake(a) {
+	//console.log(snake.player1)
 	//console.log(snake.player2)
 	var c = document.getElementById("gs-canvas");
-	var cxt = c.getContext("2d");
-	cxt.fillStyle = "#DDDDDD"
+	drawSnake(a.player1, c, "#FF0000")
+	drawSnake(a.player2, c, "#0000FF")
+}
 
-	cxt.fill()
+function drawSnake(snake, c, color) {
+	console.log(snake)
+	var cxt = c.getContext("2d");
+	cxt.beginPath()
+	
+	var wight = c.width;
+	var height = c.height;
+	var wSnake = snake.length;
+	var hSnake = snake[0].length;
+	var stepW = wight/wSnake;
+	var stepH = height/hSnake;
+	console.log(wight, height, wSnake, hSnake, stepW, stepH)
+	for (i=0; i<wSnake;i++) {
+		for (j=0; j<hSnake;j++) {
+			if (snake[i][j]==0){
+				cxt.fillStyle = "#DDDDDD"
+			} else if (snake[i][j]>0) {
+				cxt.fillStyle=color
+			} else {
+				cxt.fillStyle="#00FF00"
+			}
+			cxt.beginPath()
+			cxt.arc(stepW/2+i*stepW,stepH/2+j*stepH,7,0,Math.PI*2,true)
+			cxt.stroke()
+			cxt.closePath()
+			cxt.fill()
+		}
+	}
 }
