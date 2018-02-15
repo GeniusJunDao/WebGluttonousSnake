@@ -22,7 +22,14 @@ function game() {
 				var ID = JSON.parse(evt.data);
 				console.log("你的ID： " + ID.yourID);
 				Socket.onmessage = function (evt) {
-					paintSnake(JSON.parse(evt.data));
+					var data = JSON.parse(evt.data)
+					if (data.msg != undefined) {
+						console.log(data.msg)
+					}else if (data.final != undefined){
+						console.log(data.final)
+					} else {
+						paintSnake(data);
+					}
 					Socket.send(JSON.stringify({
 						"d": d
 					}));
@@ -41,10 +48,10 @@ function paintSnake(a) {
 	//console.log(snake.player1)
 	//console.log(snake.player2)
 	var c = document.getElementById("gs-canvas");
-	drawSnake(a.player1, a.player2, c, "#FF0000", "#0000FF")
+	drawSnake(a.player1, a.player2, c, "#FF0000", "#0000FF", a.food, "#00FF00")
 }
 
-function drawSnake(snake1, snake2, c, color1, color2) {
+function drawSnake(snake1, snake2, c, color1, color2, food, fcolor) {
 	var cxt = c.getContext("2d");
 	cxt.beginPath()
 
@@ -57,14 +64,15 @@ function drawSnake(snake1, snake2, c, color1, color2) {
 	console.log(wight, height, wSnake, hSnake, stepW, stepH)
 	for (i = 0; i < wSnake; i++) {
 		for (j = 0; j < hSnake; j++) {
-			if (snake1[i][j] == 0 && snake2[i][j] == 0) {
+			if (i == food[0] && j == food[1]) {
+				cxt.fillStyle = fcolor
+			} else if (snake1[i][j] == 0 && snake2[i][j] == 0) {
 				cxt.fillStyle = "#DDDDDD"
 			} else if (snake1[i][j] > 0) {
 				cxt.fillStyle = color1
 			} else if (snake2[i][j] > 0) {
 				cxt.fillStyle = color2
 			} else {
-				cxt.fillStyle = "#00FF00"
 			}
 			cxt.beginPath()
 			cxt.arc(stepW / 2 + i * stepW, stepH / 2 + j * stepH, 7, 0, Math.PI * 2, true)

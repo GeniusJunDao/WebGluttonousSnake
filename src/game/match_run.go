@@ -18,8 +18,8 @@ func (m *Match) Run() {
 	s2.SetBlock(gs.Weight/2, gs.Hight-1, 1)
 	s2.Head = [2]int{gs.Weight / 2, gs.Hight - 1}
 	s2.Grown(1)
-	SyncMatch := func(p *Player) error {
-		err := p.conn.WriteJSON(map[string][gs.Weight][gs.Hight]int{"player1": s1.GetPlat(), "player2": s2.GetPlat()})
+	SyncMatch := func(p *Player, food [2]int) error {
+		err := p.conn.WriteJSON(map[string]interface{}{"player1": s1.GetPlat(), "player2": s2.GetPlat(), "food": food})
 		return err
 	}
 	ReadD := func(p *Player) (int, error) {
@@ -58,14 +58,15 @@ func (m *Match) Run() {
 	ticker := time.NewTicker(200 * time.Millisecond)
 	live1, live2 := true, true
 	food := newFood()
+
 	for { //游戏进行时
 		if err1 != nil || err2 != nil {
 			log.Println("出错， 游戏退出", err1, err2)
 			return
 		}
 		if live1 {
-			SyncMatch(m.p1) //与玩家1同步
-			SyncMatch(m.p2) //与玩家2同步
+			SyncMatch(m.p1, food) //与玩家1同步
+			SyncMatch(m.p2, food) //与玩家2同步
 			s1.Grown(d1)
 			if s1.Head != food {
 				s1.Kick()
@@ -79,8 +80,8 @@ func (m *Match) Run() {
 		}
 		<-ticker.C
 		if live2 {
-			SyncMatch(m.p1) //与玩家1同步
-			SyncMatch(m.p2) //与玩家2同步
+			SyncMatch(m.p1, food) //与玩家1同步
+			SyncMatch(m.p2, food) //与玩家2同步
 			s2.Grown(d2)
 			if s2.Head != food {
 				s2.Kick()
