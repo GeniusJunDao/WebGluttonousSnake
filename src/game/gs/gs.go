@@ -52,15 +52,15 @@ func FormattingCoordinates(x, y int) (int, int) {
 }
 
 //Grown 使蛇向d所指示的方向伸长，d的取值为1up, 2down, 3left, 4right。返回值是蛇吃到的块的数据值，若没吃到东西，返回0
-func (j *Jerry) Grown(d int) (b int) {
+func (j *Jerry) Grown(d int) {
 	if d > 0 && d < 5 {
 		j.d = d
 	}
 	v := j.GetBlock(j.Head[0], j.Head[1]) //蛇头值
-	x, y := FormattingCoordinates(j.Head[0]+Direction[d][0],
-		j.Head[1]+Direction[d][1])
-	b = j.GetBlock(x, y)
+	x, y := FormattingCoordinates(j.Head[0]+Direction[j.d][0],
+		j.Head[1]+Direction[j.d][1])
 	j.SetBlock(x, y, v+1)
+	j.Head = [2]int{x, y}
 	return
 }
 
@@ -74,4 +74,16 @@ func (j *Jerry) Kick() {
 			}
 		}
 	}
+}
+
+//Score 返回蛇的分数
+func (j *Jerry) Score() (score int) {
+	for i := 0; i < Weight; i++ {
+		for ii := 0; ii < Hight; ii++ {
+			if j.GetBlock(i, ii) > score {
+				score = j.GetBlock(i, ii)
+			}
+		}
+	}
+	return
 }
