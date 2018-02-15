@@ -13,6 +13,7 @@ import (
 func main() {
 	http.HandleFunc("/", httpHandler)
 	http.HandleFunc("/game/websocket", webSocketHandler)
+	log.Println("Listen at localhost:80 !")
 	log.Fatal(http.ListenAndServe("localhost:80", nil))
 }
 
@@ -42,7 +43,7 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	player := game.CreatePlayer(conn)
-	log.Println("Player ", player.ID, " join.")
+	log.Println("玩家 ", player.ID, "进入.")
 	go game.ServePlayer(player) //服务玩家
 }
 

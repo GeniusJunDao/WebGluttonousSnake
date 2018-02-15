@@ -86,14 +86,14 @@ func TimeOut(f func() error, d time.Duration) (isTimeOut bool, err error) {
 	}
 }
 
-//匹配队友并开始对战。该函数可能返回，也可能不返回
+//匹配队友并开始对战。该函数可能返回，也可能阻塞
 func (p *Player) searchRival() {
-	log.Println("Player ", p.ID, " starting search rival")
+	//log.Println("Player ", p.ID, " starting search rival")
 	select {
 	case match <- p:
 	case rival := <-match:
 		m := Match{p1: p, p2: rival}
-		log.Printf("Player %s and %s match", m.p1.ID, m.p2.ID)
+		log.Printf("玩家 %s 和 %s 对战", m.p1.ID, m.p2.ID)
 		m.Run()
 	}
 }
